@@ -1,0 +1,13 @@
+name: repeated_pd
+title: repeated_pd
+username:
+account: ryansafner
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8856681
+bundleId: 7091470
+url: https://ryansafner.shinyapps.io/repeated_pd/
+when: 1681510288.9055
+lastSyncTime: 1681510288.90551
+asMultiple: FALSE
+asStatic: FALSE
