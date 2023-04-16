@@ -12,8 +12,8 @@ ui <- fluidPage(
       sliderInput("suckers_payoff", "Sucker's Payoff", min = 0, max = 10, value = 1, step = 1),
       sliderInput("coop_payoff", "Cooperative Payoff", min = 0, max = 10, value = 3, step = 1),
       sliderInput("defect_payoff", "Defection Payoff", min = 0, max = 10, value = 2, step = 1),
-      selectInput("player1_strategy", "Player 1 Strategy", choices = c("Grim Trigger", "Tit for Tat", "Random"), selected = "Random"),
-      selectInput("player2_strategy", "Player 2 Strategy", choices = c("Grim Trigger", "Tit for Tat", "Random"), selected = "Random")
+      selectInput("player1_strategy", "Player 1 Strategy", choices = c("Grim Trigger", "Tit for Tat", "Random", "Always Cooperate", "Always Defect"), selected = "Random"),
+      selectInput("player2_strategy", "Player 2 Strategy", choices = c("Grim Trigger", "Tit for Tat", "Random", "Always Cooperate", "Always Defect"), selected = "Random")
     ),
     mainPanel(
       verbatimTextOutput("payoff_matrix"),
@@ -72,6 +72,10 @@ server <- function(input, output) {
       } else {
         return("Defect")
       }
+    } else if (strategy == "Always Cooperate") {
+      return("Cooperate")
+    } else if (strategy == "Always Defect") {
+      return("Defect")
     } else {
       stop("Invalid strategy")
     }
@@ -152,14 +156,19 @@ server <- function(input, output) {
       mutate(Player = case_when(Player == "player1_payoff" ~ "Player 1",
                                 Player == "player2_payoff" ~ "Player 2")
       ) %>%
+      group_by(Player) %>%
+      mutate(cs = cumsum(Payoff)) %>%
       ggplot(data = .)+
       aes(x = round,
-          y = cumsum(Payoff),
+          y = cs,
           color = Player)+
-      geom_path()+
+      geom_path(size = 2)+
       labs(x = "Round",
-           y = "Cumulative Payoff")+
-      theme_light()
+           y = "Cumulative Payoff",
+           color = NULL)+
+      theme_light(base_family = "Fira Sans Condensed", base_size = 14)+
+      scale_color_viridis_d()+
+      theme(legend.position = "bottom")
   })
 }
 
